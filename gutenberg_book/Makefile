@@ -3,13 +3,16 @@ BOOKS=alice christmas_carol dracula frankenstein heart_of_darkness life_of_bee m
 FREQLISTS=$(BOOKS:%=results/%.freq.txt)
 SENTEDBOOKS=$(BOOKS:%=results/%.sent.txt)
 
-all: $(FREQLISTS) $(SENTEDBOOKS)
+all: $(FREQLISTS) $(SENTEDBOOKS) results/all.freq.txt results/all.sent.txt
 
-#clean:
-#	rm -f results/* data/*no_md.txt
+clean:
+	rm -f results/* data/*no_md.txt
 
 %.no_md.txt: %.txt
 	python3 src/remove_gutenberg_metadata.py $< $@
+
+data/all.no_md.txt: $(BOOKS:%=data/%.no_md.txt)
+	cat $^ > data/all.no_md.txt
 
 results/%.freq.txt: data/%.no_md.txt 
 	src/freqlist.sh $< $@
